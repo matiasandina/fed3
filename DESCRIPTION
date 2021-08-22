@@ -15,7 +15,8 @@ URL: https://github.com/matiasandina/fed3
 BugReports: https://github.com/matiasandina/fed3/issues
 Imports: 
     dplyr,
-    readr
+    readr,
+    magrittr
 Depends: 
     lubridate,
     stringr,
