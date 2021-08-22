@@ -1,5 +1,5 @@
-# This function reads CSV files as saved by FED3 Library
-# It will do basic parsing of column classes and return a data.frame
+#' @title "Read Fed Files"
+#' @name read_fed
 #' @param filename file path of csv file produced by FED3
 #' @details This function will read the raw data with column specifications (see `fed_col_types()`). It will append the `datetime` by formatting the FED's clock datetime as `yyyy-mm-dd HH:MM:SS`, it will also extract `year`, `month`, and `day` from that date. It will parse the session from the `filename` and append it to the resulting `data.frame`.
 #' @export

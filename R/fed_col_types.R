@@ -1,4 +1,5 @@
-# This function
+#' @title "Fed Column Types"
+#' @name fed_col_types
 #' @param version character version of FED_library used to collect data
 fed_col_types <- function(lib_version=NULL){
 
@@ -21,7 +22,7 @@ fed_col_types <- function(lib_version=NULL){
              Pellet_Count = readr::col_double(),
              Block_Pellet_Count = readr::col_double(),
              Retrieval_Time = readr::col_double(),
-             InterPellet_Retrieval_Time = readr::col_double(),
+             InterPelletInterval = readr::col_double(),
              Poke_Time = readr::col_double())
       )
     )
