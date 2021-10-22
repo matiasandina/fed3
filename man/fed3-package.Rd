@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Matias Andina \email{matiasandina@gmail.com} (0000-0002-1996-2539)
+\strong{Maintainer}: Matias Andina \email{matiasandina@gmail.com} (\href{https://orcid.org/0000-0002-1996-2539}{ORCID})
 
 }
 \keyword{internal}

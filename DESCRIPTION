@@ -16,9 +16,12 @@ BugReports: https://github.com/matiasandina/fed3/issues
 Imports: 
     dplyr,
     readr,
-    magrittr
+    magrittr,
+    usethis,
+    fs,
+    choices
 Depends: 
     lubridate,
     stringr,
     tibble
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2

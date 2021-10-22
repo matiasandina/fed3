@@ -1,13 +1,29 @@
-#' This function copies provided files from a path to a new folder at destiny
-#' The normal use is to copy from the backup folder
-#' This function will also delete empty files
-#' @seealso `find_files()`
+#' @title Copy Files
+#' @description This function copies files from a path to a new folder at destiny. This function will also delete empty files, but it will not delete very small files.
+#' @seealso `[find_files()]`
+#' @export
 
-copy_files <- function(file_list, target_dir = NULL) {
-  if (is.null(target_dir)) {
-    target_dir <- choices::choose_directory(title =,
+copy_files <- function(file_list = NULL, from_dir = NULL, dest_dir = NULL) {
+
+  # check file list ---------------------------------------------------------
+  if (is.null(file_list)){
+    usethis::ui_info("File list not provided, calling find_files()")
+    Sys.sleep(1)
+    file_list <- find_files()
+  }
+
+  # check source directory  ------------------------------------------------------------
+  if (is.null(dest_dir)) {
+    usethis::ui_info("Destination not provided, choose manually")
+    dest_dir <- choices::choose_directory(title = "Choose destination directory",
+                                          method = "rstudioapi")
+  }
+
+  # check destination -------------------------------------------------------
+  if (is.null(dest_dir)) {
+    usethis::ui_info("Destination not provided, choose manually")
+    dest_dir <- choices::choose_directory(title = "Choose destination directory",
                                             method = "rstudioapi")
-
   }
   # create new folder called FED_data
   new_fed <- file.path(target_dir, "FED_data")
