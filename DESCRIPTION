@@ -19,7 +19,9 @@ Imports:
     magrittr,
     usethis,
     fs,
-    choices
+    choices,
+    hms,
+    glue
 Depends: 
     lubridate,
     stringr,

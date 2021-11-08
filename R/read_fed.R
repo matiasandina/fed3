@@ -15,9 +15,11 @@ read_fed <- function(filename, lib_version = NULL){
 
 
   # Add year, day month columns
+  # add fed number
   X <- X %>%
     dplyr::mutate(day = lubridate::day(datetime),
                   month = lubridate::month(datetime),
-                  year = lubridate::year(datetime))
+                  year = lubridate::year(datetime),
+                  FED = paste0("FED", str_pad(Device_Number, width=3, pad=0)))
   return(X)
 }
