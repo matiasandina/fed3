@@ -3,19 +3,20 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of fed3 is to ...
+The goal of fed3 is to analyze data coming from [FED3 feeder devices from KravitzLabDevices](https://github.com/KravitzLabDevices/FED3/)
 
 ## Installation
 
-You can install the released version of fed3 from [CRAN](https://CRAN.R-project.org) with:
+You can install the current version of fed3 with:
 
 ``` r
-install.packages("fed3")
+# Not yet in CRAN
+# install.packages("fed3")
+devtools::install_github("matiasandina/fed3")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(fed3)
