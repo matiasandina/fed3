@@ -1,6 +1,6 @@
 Package: fed3
 Title: An R package to read and analyze data from FED3 devices 
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "Matias",
            family = "Andina",
