@@ -4,7 +4,7 @@
 \alias{read_fed}
 \title{"Read Fed Files"}
 \usage{
-read_fed(filename, lib_version = NULL)
+read_fed(filename, lib_version = NULL, deduplicate_method = "offset")
 }
 \arguments{
 \item{filename}{file path of csv file produced by FED3}
