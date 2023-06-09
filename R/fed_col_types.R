@@ -54,10 +54,10 @@ fed_col_types <- function(lib_version=NULL){
   versions <- unlist(purrr::map(col_classes, "version"))
   if(is.null(lib_version)) {
       # default to last one if we can't find the version
-      message("FED lib_version not provided, using {dplyr::last(versions)}")
+      message(glue::glue("FED lib_version not provided, using {dplyr::last(versions)}"))
       return(dplyr::last(col_classes)$columns)
     } else if(lib_version %in% versions == FALSE){
-      message("FED lib_version {lib_version} not found in verions, using {dplyr::last(versions)}")
+      message(glue::glue("FED lib_version {lib_version} not found in verions, using {dplyr::last(versions)}"))
       return(dplyr::last(col_classes)$columns)
     } else {
     version_index <- stringr::str_which(string = versions, pattern = lib_version)
