@@ -8,9 +8,17 @@ filter_pellets <- function(df){
 #' This might happen due to the experiment design or because a FED needed to be replaced during the experiment
 #' @export
 recalculate_pellets <- function(df){
-  df %>%
-    filter_pellets() %>%
-    dplyr::arrange(ID, datetime) %>%
-    dplyr::group_by(ID) %>%
-    dplyr::mutate(pellets = 1:length(Pellet_Count))
+  if (ID %in% names(df)){
+    df %>%
+      filter_pellets() %>%
+      dplyr::arrange(ID, datetime) %>%
+      dplyr::group_by(ID) %>%
+      dplyr::mutate(pellets = 1:length(Pellet_Count)) %>%
+      ungroup()
+  } else {
+    df %>%
+      filter_pellets() %>%
+      dplyr::arange(datetime) %>%
+      dplyr::mutate(pellets = 1:length(Pellet_count))
+  }
 }
