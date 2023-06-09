@@ -1,4 +1,4 @@
-# fed3 (development version)
+# fed3 0.1.0
 
 # fed3 0.0.0.9000
 
