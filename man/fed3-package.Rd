@@ -12,6 +12,7 @@ An R package to read and analyze data from FED3 devices
 Useful links:
 \itemize{
   \item \url{https://github.com/matiasandina/fed3}
+  \item \url{https://matiasandina.github.io/fed3/}
   \item Report bugs at \url{https://github.com/matiasandina/fed3/issues}
 }
 
