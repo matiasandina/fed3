@@ -22,7 +22,8 @@ Imports:
     choices,
     hms,
     glue,
-    testthat
+    testthat,
+    zoo
 Depends: 
     lubridate,
     R (>= 2.10),
