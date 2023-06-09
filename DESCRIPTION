@@ -21,9 +21,11 @@ Imports:
     fs,
     choices,
     hms,
-    glue
+    glue,
+    testthat
 Depends: 
     lubridate,
+    R (>= 2.10),
     stringr,
     tibble
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
