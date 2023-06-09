@@ -20,7 +20,7 @@ Imports:
     magrittr,
     usethis,
     fs,
-    choices,
+    choices (>= 0.1.0),
     hms,
     glue,
     testthat,
@@ -31,3 +31,5 @@ Depends:
     stringr,
     tibble
 RoxygenNote: 7.2.3
+Remotes:  
+    matiasandina/choices
