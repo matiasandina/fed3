@@ -24,12 +24,13 @@ Imports:
     hms,
     glue,
     testthat,
-    zoo
+    zoo,
+    tidyr
 Depends: 
     lubridate,
     R (>= 2.10),
     stringr,
     tibble
 RoxygenNote: 7.2.3
-Remotes:  
+Remotes: 
     matiasandina/choices
