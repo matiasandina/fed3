@@ -23,7 +23,9 @@ StatLights
 A ggplot2 layer to be added to a ggplot object.
 }
 \description{
-A custom ggplot2 extension to shade areas in a plot according to provided light hours. It shades from lights off to lights on.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A custom ggplot2 extension to shade areas in a plot according to provided light hours.
+It shades from lights off to lights on. Usage through \code{\link[=geom_lights]{geom_lights()}} or \code{\link[=stat_ligths]{stat_ligths()}}
 }
 \examples{
 \dontrun{

@@ -1,8 +1,9 @@
 #' @title Make Lights
-#' @description  This function will make light shading pattern for ggplot plots
+#' @description
+#'  `r lifecycle::badge("experimental")`
+#'  This function will make light shading pattern for ggplot plots
 #' @param params A `list` that contains a `lights` `vector` with the ON-OFF light cycle
 #' @param df A `data.frame` containing a `datetime` column that will provide the ranges of the experimental data
-#' `r lifecycle::badge("experimental")`
 #' @export
 make_lights <- function(params, df) {
   # This uses the range in the data
@@ -91,7 +92,10 @@ make_lights <- function(params, df) {
 
 #' StatLights
 #'
-#' @description A custom ggplot2 extension to shade areas in a plot according to provided light hours. It shades from lights off to lights on.
+#' @description
+#'  `r lifecycle::badge("experimental")`
+#'  A custom ggplot2 extension to shade areas in a plot according to provided light hours.
+#'  It shades from lights off to lights on. Usage through [geom_lights()] or [stat_ligths()]
 #'
 #' @param lights_on_hour An integer representing the hour of the day (0-23) when the lights turn on.
 #' @param lights_off_hour An integer representing the hour of the day (0-23) when the lights turn off.
