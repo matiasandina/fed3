@@ -9,7 +9,7 @@ bin_pellets(data, time_col, bin, label_first_break = TRUE)
 \arguments{
 \item{data}{A data frame containing the pellet data.}
 
-\item{time_col}{The `datetime` column to use as}
+\item{time_col}{The \code{datetime} column to use as}
 
 \item{bin}{A character string specifying the time interval for binning (e.g., "1 hour", "30 min").}
 
@@ -19,8 +19,8 @@ bin_pellets(data, time_col, bin, label_first_break = TRUE)
 A data frame with binned pellet counts and corresponding bin timestamps.
 }
 \description{
-Bins the pellets based on the specified time interval in `bin` and the data range.
+Bins the pellets based on the specified time interval in \code{bin} and the data range.
 }
 \seealso{
-[recalculate_pellets()]
+\code{\link[=recalculate_pellets]{recalculate_pellets()}}
 }

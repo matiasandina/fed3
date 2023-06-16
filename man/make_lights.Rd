@@ -7,9 +7,10 @@
 make_lights(params, df)
 }
 \arguments{
-\item{params}{A `list` that contains a `lights` `vector` with the ON-OFF light cycle}
+\item{params}{A \code{list} that contains a \code{lights} \code{vector} with the ON-OFF light cycle}
 
-\item{df}{A `data.frame` containing a `datetime` column that will provide the ranges of the experimental data}
+\item{df}{A \code{data.frame} containing a \code{datetime} column that will provide the ranges of the experimental data
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
 }
 \description{
 This function will make light shading pattern for ggplot plots

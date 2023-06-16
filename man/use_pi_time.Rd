@@ -12,13 +12,13 @@ use_pi_time(fed_df, fw_df)
 \item{fw_df}{A data frame, the result of fed3::read_fed(..., lib_version = "fw").}
 }
 \value{
-A data frame identical to `fed_df` but with `Pi_Time` adjusted based
-on the linear model trained on `fw_df`.
+A data frame identical to \code{fed_df} but with \code{Pi_Time} adjusted based
+on the linear model trained on \code{fw_df}.
 }
 \description{
-This function adjusts the time in `fed_df` dataset
-using a linear model trained on data coming from FEDWatcher (where `Pi_Time` is not NA).
-You can use this function even if `fed_df` and `fw_df` do not fully overlap
+This function adjusts the time in \code{fed_df} dataset
+using a linear model trained on data coming from FEDWatcher (where \code{Pi_Time} is not NA).
+You can use this function even if \code{fed_df} and \code{fw_df} do not fully overlap
 in time.
 }
 \examples{

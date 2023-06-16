@@ -10,5 +10,5 @@ copy_files(file_list = NULL, from_dir = NULL, dest_dir = NULL)
 This function copies files from a path to a new folder at destiny. This function will also delete empty files, but it will not delete very small files.
 }
 \seealso{
-`[find_files()]`
+\verb{[find_files()]}
 }

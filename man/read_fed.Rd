@@ -13,5 +13,5 @@ read_fed(filename, lib_version = NULL, deduplicate_method = "offset")
 "Read Fed Files"
 }
 \details{
-This function will read the raw data with column specifications (see `fed_col_types()`). It will append the `datetime` by formatting the FED's clock datetime as `yyyy-mm-dd HH:MM:SS`, it will also extract `year`, `month`, and `day` from that date. It will parse the session from the `filename` and append it to the resulting `data.frame`.
+This function will read the raw data with column specifications (see \code{fed_col_types()}). It will append the \code{datetime} by formatting the FED's clock datetime as \verb{yyyy-mm-dd HH:MM:SS}, it will also extract \code{year}, \code{month}, and \code{day} from that date. It will parse the session from the \code{filename} and append it to the resulting \code{data.frame}.
 }

@@ -13,7 +13,7 @@ Backup SD card
 This function finds FED3 files on a selected folder (SD card) and stores them on a user-defined folder.
 }
 \seealso{
-`fed3::find_files()`, `fed3::copy_files()`
+\code{fed3::find_files()}, \code{fed3::copy_files()}
 
 This needs interactive session for user to choose folders
 We assume interactive session likely thorugh Rstudio

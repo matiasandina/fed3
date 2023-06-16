@@ -35,3 +35,4 @@ Depends:
 RoxygenNote: 7.2.3
 Remotes: 
     matiasandina/choices
+Roxygen: list(markdown = TRUE)

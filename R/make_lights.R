@@ -2,6 +2,7 @@
 #' @description  This function will make light shading pattern for ggplot plots
 #' @param params A `list` that contains a `lights` `vector` with the ON-OFF light cycle
 #' @param df A `data.frame` containing a `datetime` column that will provide the ranges of the experimental data
+#' `r lifecycle::badge("experimental")`
 #' @export
 make_lights <- function(params, df) {
   # This uses the range in the data
