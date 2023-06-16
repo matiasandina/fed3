@@ -2,7 +2,7 @@
 % Please edit documentation in R/pellets.R
 \name{bin_pellets}
 \alias{bin_pellets}
-\title{Bin Pellets based on Time Intervals}
+\title{Bin Pellets}
 \usage{
 bin_pellets(data, time_col, bin, label_first_break = TRUE)
 }

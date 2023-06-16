@@ -1,12 +1,12 @@
+#' @title Filter Pellets
+#' @description This function filters the pellet events
 #' @export
 filter_pellets <- function(df){
   df %>% dplyr::filter(Event == "Pellet")
 }
 
-#' This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column.
-#' The main reason behind it is that one animal can receive more than one FED device.
-#' This might happen due to the experiment design or because a FED needed to be replaced during the experiment.
-#' Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.
+#' @title Recalculate Pellets
+#' @description This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column. The main reason behind it is that one animal can receive more than one FED device. This might happen due to the experiment design or because a FED needed to be replaced during the experiment. Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.
 #' @param df A data frame containing FED data.
 #' @param group_var A string specifying the column to group by. If NULL (default), no grouping is performed.
 #' @return A data frame identical to `df` but with recalculated pellet counts.
@@ -30,9 +30,9 @@ recalculate_pellets <- function(df, group_var = NULL) {
   }
 }
 
-#' Bin Pellets based on Time Intervals
+#' @title Bin Pellets
 #'
-#' Bins the pellets based on the specified time interval in `bin` and the data range.
+#' @description Bins the pellets based on the specified time interval in `bin` and the data range.
 #'
 #' @param data A data frame containing the pellet data.
 #' @param time_col The `datetime` column to use as

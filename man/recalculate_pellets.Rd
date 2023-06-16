@@ -2,10 +2,7 @@
 % Please edit documentation in R/pellets.R
 \name{recalculate_pellets}
 \alias{recalculate_pellets}
-\title{This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column.
-The main reason behind it is that one animal can receive more than one FED device.
-This might happen due to the experiment design or because a FED needed to be replaced during the experiment.
-Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.}
+\title{Recalculate Pellets}
 \usage{
 recalculate_pellets(df, group_var = NULL)
 }
@@ -18,8 +15,5 @@ recalculate_pellets(df, group_var = NULL)
 A data frame identical to `df` but with recalculated pellet counts.
 }
 \description{
-This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column.
-The main reason behind it is that one animal can receive more than one FED device.
-This might happen due to the experiment design or because a FED needed to be replaced during the experiment.
-Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.
+This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column. The main reason behind it is that one animal can receive more than one FED device. This might happen due to the experiment design or because a FED needed to be replaced during the experiment. Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.
 }
