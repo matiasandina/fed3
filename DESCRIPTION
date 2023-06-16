@@ -26,7 +26,8 @@ Imports:
     testthat,
     zoo,
     tidyr,
-    ggplot2
+    ggplot2,
+    lifecycle
 Depends: 
     lubridate,
     R (>= 2.10),
