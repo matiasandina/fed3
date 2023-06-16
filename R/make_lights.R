@@ -147,6 +147,7 @@ StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
                                required_aes = c("x")
 )
 
+#' @export
 geom_lights <- function(mapping = NULL, data = NULL, position = "identity", ..., fill = "gray60", alpha = 0.5, lights_on_hour = 7, lights_off_hour = 19) {
   ggplot2::layer(
     stat = StatLights,

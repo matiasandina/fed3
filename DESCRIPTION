@@ -25,7 +25,8 @@ Imports:
     glue,
     testthat,
     zoo,
-    tidyr
+    tidyr,
+    ggplot2
 Depends: 
     lubridate,
     R (>= 2.10),
