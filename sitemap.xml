@@ -19,6 +19,9 @@
     <loc>https://matiasandina.github.io/fed3/news/index.html</loc>
   </url>
   <url>
+    <loc>https://matiasandina.github.io/fed3/reference/StatLights.html</loc>
+  </url>
+  <url>
     <loc>https://matiasandina.github.io/fed3/reference/backup_sd.html</loc>
   </url>
   <url>
@@ -32,6 +35,9 @@
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/fed_col_types.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/filter_pellets.html</loc>
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/find_files.html</loc>
