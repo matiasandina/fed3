@@ -147,11 +147,11 @@ StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
                                required_aes = c("x")
 )
 
-geom_lights <- function(mapping = NULL, data = NULL, stat = "lights", position = "identity", ..., fill = NULL, alpha = NULL, lights_on_hour = 7, lights_off_hour = 19) {
+geom_lights <- function(mapping = NULL, data = NULL, position = "identity", ..., fill = "gray60", alpha = 0.5, lights_on_hour = 7, lights_off_hour = 19) {
   ggplot2::layer(
+    stat = StatLights,
     data = data,
     mapping = mapping,
-    stat = stat,
     geom = ggplot2::GeomRect,
     position = position,
     show.legend = FALSE,
@@ -166,7 +166,7 @@ geom_lights <- function(mapping = NULL, data = NULL, stat = "lights", position =
   )
 }
 
-stat_lights <- function(mapping = NULL, data = NULL, geom = "lights", position = "identity", ..., fill = NULL, alpha = NULL, lights_on_hour = 7, lights_off_hour = 19) {
+stat_lights <- function(mapping = NULL, data = NULL, geom = "lights", position = "identity", ..., fill = "gray60", alpha = 0.5, lights_on_hour = 7, lights_off_hour = 19) {
   ggplot2::layer(
     stat = StatLights,
     data = data,
