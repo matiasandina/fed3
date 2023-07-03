@@ -74,14 +74,14 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
     dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = dplyr::last(pellets) - dplyr::first(pellets)))) %>%
     tidyr::unnest(data) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(bin = as.POSIXct(as.character(bin)))
+    dplyr::mutate(bin = as.POSIXct(as.character(bin), tz = "UTC"))
 
   # create a data frame that includes all possible combinations of bins and groups
   unique_groups <- data %>%
     dplyr::select(all_of(groups)) %>%
     dplyr::distinct()
   # Generate possible combinations of bin and groups without duplicates
-  complete_data <- tidyr::crossing(bin = as.POSIXct(as.character(labels)), unique_groups)
+  complete_data <- tidyr::crossing(bin = as.POSIXct(as.character(labels, tz = "UTC")), unique_groups)
 
   # join the computed data with the complete data
   return(
