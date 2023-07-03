@@ -45,10 +45,15 @@ recalculate_pellets <- function(df, group_var = NULL) {
 bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # get the proper column
   time_column <- pull(data, {{time_col}})
+
+  # get grouping variables
+  groups <- dplyr::group_vars(data)
+
   # generate the breaks
   breaks <- seq(from = lubridate::floor_date(min(time_column), bin),
                 to = lubridate::ceiling_date(max(time_column), bin),
                 by = bin)
+
   # breaks will be [From, To)
   if (label_first_break) {
     # we label From
@@ -57,13 +62,31 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
     # we label To
     labels <- breaks[-1]
   }
-  data %>%
-    dplyr::mutate(bin = cut({{time_col}}, breaks = breaks, labels = labels, right = FALSE)) %>%
-    dplyr::group_by(bin) %>%
-    dplyr::summarise(pellet_rate = dplyr::last(pellets) - dplyr::first(pellets),
-                     .groups = "keep") %>%
+  # bin the time column on common breaks
+  data <- data %>%
+    dplyr::mutate(bin = cut({{time_col}}, breaks = breaks, labels = labels, right = FALSE))
+  # nest to perform calculation
+  data_nested <- data %>%
+    dplyr::group_by(across(all_of(groups)), bin) %>%
+    tidyr::nest()
+  # calculate last - first pellet count on cummulative column
+  data_nested <- data_nested %>%
+    dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = dplyr::last(pellets) - dplyr::first(pellets)))) %>%
+    tidyr::unnest(data) %>%
     dplyr::ungroup() %>%
-    tidyr::complete(bin, fill = list(pellet_rate = 0)) %>%
     dplyr::mutate(bin = as.POSIXct(as.character(bin)))
-}
 
+  # create a data frame that includes all possible combinations of bins and groups
+  unique_groups <- data %>%
+    dplyr::select(all_of(groups)) %>%
+    dplyr::distinct()
+  # Generate possible combinations of bin and groups without duplicates
+  complete_data <- tidyr::crossing(bin = as.POSIXct(as.character(labels)), unique_groups)
+
+  # join the computed data with the complete data
+  complete_data %>%
+    dplyr::left_join(data_nested, by = c("bin", groups)) %>%
+    tidyr::replace_na(list(pellet_rate = 0)) %>%
+    dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
+  return(complete_data)
+}
