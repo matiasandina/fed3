@@ -84,9 +84,10 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   complete_data <- tidyr::crossing(bin = as.POSIXct(as.character(labels)), unique_groups)
 
   # join the computed data with the complete data
-  complete_data %>%
+  return(
+    complete_data %>%
     dplyr::left_join(data_nested, by = c("bin", groups)) %>%
     tidyr::replace_na(list(pellet_rate = 0)) %>%
     dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
-  return(complete_data)
+  )
 }
