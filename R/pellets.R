@@ -43,8 +43,12 @@ recalculate_pellets <- function(df, group_var = NULL) {
 #' @seealso [recalculate_pellets()]
 #' @export
 bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
+  # check if we have 100% pellet events
+  if (fed3:::check_pellets(data)) {
+    stop("Data contains Events other than Pellets.")
+  }
   # get the proper column
-  time_column <- pull(data, {{time_col}})
+  time_column <- dplyr::pull(data, {{time_col}})
 
   # get grouping variables
   groups <- dplyr::group_vars(data)
@@ -71,7 +75,9 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
     tidyr::nest()
   # calculate last - first pellet count on cummulative column
   data_nested <- data_nested %>%
-    dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = dplyr::last(pellets) - dplyr::first(pellets)))) %>%
+    # we should be able to use n() because we checked for all pellet events at the top
+    # also, doing last-first would be off by one, so we should account for that if coming back to that strategy
+    dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = n()))) %>%
     tidyr::unnest(data) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(bin = as.POSIXct(as.character(bin), tz = "UTC"))
@@ -81,7 +87,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
     dplyr::select(all_of(groups)) %>%
     dplyr::distinct()
   # Generate possible combinations of bin and groups without duplicates
-  complete_data <- tidyr::crossing(bin = as.POSIXct(as.character(labels, tz = "UTC")), unique_groups)
+  complete_data <- tidyr::crossing(bin = as.POSIXct(labels, tz = "UTC"), unique_groups)
 
   # join the computed data with the complete data
   return(
@@ -90,4 +96,8 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
     tidyr::replace_na(list(pellet_rate = 0)) %>%
     dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
   )
+}
+
+check_pellets <- function(data) {
+  return(any(data$Event != "Pellet"))
 }
