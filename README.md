@@ -25,3 +25,6 @@ library(fed3)
 ## basic example code
 ```
 
+## Docs
+
+📖 Package documentation site [here](matiasandina.github.io/fed3/)
