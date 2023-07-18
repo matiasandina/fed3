@@ -12,15 +12,16 @@ filter_pellets <- function(df){
 #' @return A data frame identical to `df` but with recalculated pellet counts.
 #' @export
 recalculate_pellets <- function(df, group_var = NULL) {
-  if (!is.null(group_var)) {
+  if (!rlang::is_null(rlang::enexpr(group_var))) {
     group_var_enquo <- rlang::enquo(group_var)
-    if (rlang::as_string(group_var_enquo) %in% names(df)) {
+    group_var_name <- rlang::quo_name(group_var_enquo)
+    if (group_var_name %in% names(df)) {
       df %>%
         filter_pellets() %>%
-        dplyr::arrange({{group_var}}, datetime) %>%
-        dplyr::group_by({{group_var}}) %>%
+        dplyr::arrange(!!group_var_enquo, datetime) %>%
+        dplyr::group_by(!!group_var_enquo) %>%
         dplyr::mutate(pellets = 1:length(Pellet_Count)) %>%
-        ungroup()
+        dplyr::ungroup()
     }
   } else {
     df %>%
