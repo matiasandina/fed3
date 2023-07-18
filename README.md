@@ -27,4 +27,4 @@ library(fed3)
 
 ## Docs
 
-📖 Package documentation site [here](https//:matiasandina.github.io/fed3/)
+📖 Package documentation site [here](https://matiasandina.github.io/fed3/)
