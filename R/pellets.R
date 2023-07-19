@@ -68,7 +68,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   time_column <- dplyr::pull(data, {{time_col}})
 
   # split bin into n and precision
-  bin_components <- parse_bin(bin)
+  bin_components <- fed3:::parse_bin(bin)
   n <- bin_components$n
   precision <- bin_components$precision
 
@@ -78,7 +78,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # generate the breaks using clock package
   breaks <- seq(from = clock::date_floor(min(time_column), n = n, precision = precision),
                 to = clock::date_ceiling(max(time_column), n = n, precision = precision),
-                by = paste(n, standardize_unit(precision)))
+                by = paste(n, fed3:::standardize_unit(precision)))
 
   # We still want to keep the labels as a POSIXct object for later merging
   if (label_first_break) {
@@ -93,10 +93,9 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 
   # nest to perform calculation
   data_nested <- data %>%
-    dplyr::group_by(across(all_of(groups)), bin) %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(groups)), bin) %>%
     tidyr::nest()
 
-  # calculate last - first pellet count on cummulative column
   data_nested <- data_nested %>%
     dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = n()))) %>%
     tidyr::unnest(data) %>%
@@ -120,6 +119,55 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   )
 }
 
+#' Bin Pellet Events According to Light Cycle
+#'
+#' This function assigns each event to a light or dark period, then counts the number of events in each period.
+#' It requires a data frame that contains a datetime column and only pellet events.
+#'
+#' @param data A data frame that contains a datetime column and only pellet events.
+#' @param time_col The datetime column in your data frame. You can use a bare column name.
+#' @param lights_on_hour The hour (0-23) when the light period starts. Default is 7.
+#' @param lights_off_hour The hour (0-23) when the light period ends. Default is 19.
+#'
+#' @return A `data.frame` grouped by the original grouping variables, date and light cycle period,
+#' with an additional column `pellets` indicating the number of events in each period.
+#'
+#' @seealso [fed3::bin_pellets()], [fed3::filter_pellets()], [fed3::recalculate_pellets()]
+#'
+#' @export
+bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_off_hour = 19) {
+    # Check if we have 100% pellet events
+    if (fed3:::check_pellets(data)) {
+      stop("Data contains Events other than Pellets.\nUse filter_pellets() or recalculate_pellets() as needed.")
+    }
+    # Get grouping variables
+    groups <- dplyr::group_vars(data)
+
+    # Create a new column to indicate whether it's light or dark
+    data <- data %>%
+      dplyr::mutate(light_cycle =
+                      purrr::map_chr(.x = {{time_col}},
+                                     .f = ~ {
+                                       if (lights_off_hour > lights_on_hour) {
+                                         if (lubridate::hour(.x) >= lights_on_hour &
+                                             lubridate::hour(.x) < lights_off_hour) {"light"}
+                                         else {"dark"}
+                                       } else {
+                                         if (lubridate::hour(.x) >= lights_on_hour |
+                                             lubridate::hour(.x) < lights_off_hour) {"light"}
+                                         else {"dark"}
+                                       }
+                                     }))
+
+    # Count the events
+    data <- data %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of(groups)),
+                      date = lubridate::date({{time_col}}),
+                      light_cycle) %>%
+      dplyr::count(name = "pellets")
+
+    return(data)
+}
 
 check_pellets <- function(data) {
   return(any(data$Event != "Pellet"))
