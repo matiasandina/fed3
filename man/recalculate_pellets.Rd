@@ -7,12 +7,12 @@
 recalculate_pellets(df, group_var = NULL)
 }
 \arguments{
-\item{df}{A data frame containing FED data.}
+\item{df}{A data frame containing FED data. If your \code{data.frame} is grouped, \code{group_var} will be disregarded.}
 
 \item{group_var}{A string specifying the column to group by. If NULL (default), no grouping is performed.}
 }
 \value{
-A data frame identical to \code{df} but with recalculated pellet counts.
+A data frame identical to \code{df} but with recalculated pellet counts and arranged by \code{datetime}.
 }
 \description{
 This function recalculates pellets if given a FED_data \code{data.frame} that contains an identifier column. The main reason behind it is that one animal can receive more than one FED device. This might happen due to the experiment design or because a FED needed to be replaced during the experiment. Alternatively, it could be used to analyze several datasets coming from different animals independent of \code{Device_Number}.
