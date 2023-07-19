@@ -7,28 +7,43 @@ filter_pellets <- function(df){
 
 #' @title Recalculate Pellets
 #' @description This function recalculates pellets if given a FED_data `data.frame` that contains an identifier column. The main reason behind it is that one animal can receive more than one FED device. This might happen due to the experiment design or because a FED needed to be replaced during the experiment. Alternatively, it could be used to analyze several datasets coming from different animals independent of `Device_Number`.
-#' @param df A data frame containing FED data.
+#' @param df A data frame containing FED data. If your `data.frame` is grouped, `group_var` will be disregarded.
 #' @param group_var A string specifying the column to group by. If NULL (default), no grouping is performed.
-#' @return A data frame identical to `df` but with recalculated pellet counts.
+#' @return A data frame identical to `df` but with recalculated pellet counts and arranged by `datetime`.
 #' @export
 recalculate_pellets <- function(df, group_var = NULL) {
-  if (!rlang::is_null(rlang::enexpr(group_var))) {
-    group_var_enquo <- rlang::enquo(group_var)
-    group_var_name <- rlang::quo_name(group_var_enquo)
-    if (group_var_name %in% names(df)) {
-      df %>%
-        filter_pellets() %>%
-        dplyr::arrange(!!group_var_enquo, datetime) %>%
-        dplyr::group_by(!!group_var_enquo) %>%
-        dplyr::mutate(pellets = 1:length(Pellet_Count)) %>%
-        dplyr::ungroup()
+  if (dplyr::is_grouped_df(df)) {
+    if (!rlang::is_null(rlang::enexpr(group_var))) {
+      warning("Ignoring 'group_var' argument as the input dataframe is already grouped.")
     }
+    groups <- dplyr::group_vars(df)
+    output <- df %>%
+        filter_pellets() %>%
+        dplyr::arrange(dplyr::across(dplyr::all_of(groups)), datetime) %>%
+        dplyr::mutate(pellets = 1:length(Pellet_Count))
   } else {
-    df %>%
-      filter_pellets() %>%
-      dplyr::arrange(datetime) %>%
-      dplyr::mutate(pellets = 1:length(Pellet_Count))
+    # Case: Not grouped but group_var provided
+    if (!rlang::is_null(rlang::enexpr(group_var))) {
+      group_var_enquo <- rlang::enquo(group_var)
+      group_var_name <- rlang::quo_name(group_var_enquo)
+      if (group_var_name %in% names(df)) {
+        output <- df %>%
+          filter_pellets() %>%
+          dplyr::arrange(!!group_var_enquo, datetime) %>%
+          dplyr::group_by(!!group_var_enquo) %>%
+          dplyr::mutate(pellets = 1:length(Pellet_Count)) %>%
+          dplyr::ungroup()
+      }
+    } else {
+      # Case: Not grouped, no group_var provided
+      output <- df %>%
+        filter_pellets() %>%
+        dplyr::arrange(datetime) %>%
+        dplyr::mutate(pellets = 1:length(Pellet_Count))
+    }
   }
+  return(output)
+
 }
 
 #' @title Bin Pellets
@@ -37,47 +52,52 @@ recalculate_pellets <- function(df, group_var = NULL) {
 #'
 #' @param data A data frame containing the pellet data.
 #' @param time_col The `datetime` column to use as
-#' @param bin A character string specifying the time interval for binning (e.g., "1 hour", "30 min").
+#' @param bin A character string specifying the time interval for binning (e.g., "1 hour", "30 minunte").
 #' @param label_first_break Logical indicating whether to label the first break as the start time (default is TRUE).
 #'
 #' @return A data frame with binned pellet counts and corresponding bin timestamps.
-#' @seealso [recalculate_pellets()]
+#' @seealso [recalculate_pellets()], [clock::time_point_round()]
 #' @export
 bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # check if we have 100% pellet events
   if (fed3:::check_pellets(data)) {
     stop("Data contains Events other than Pellets.")
   }
+
   # get the proper column
   time_column <- dplyr::pull(data, {{time_col}})
+
+  # split bin into n and precision
+  bin_components <- parse_bin(bin)
+  n <- bin_components$n
+  precision <- bin_components$precision
 
   # get grouping variables
   groups <- dplyr::group_vars(data)
 
-  # generate the breaks
-  breaks <- seq(from = lubridate::floor_date(min(time_column), bin),
-                to = lubridate::ceiling_date(max(time_column), bin),
-                by = bin)
+  # generate the breaks using clock package
+  breaks <- seq(from = clock::date_floor(min(time_column), n = n, precision = precision),
+                to = clock::date_ceiling(max(time_column), n = n, precision = precision),
+                by = paste(n, standardize_unit(precision)))
 
-  # breaks will be [From, To)
+  # We still want to keep the labels as a POSIXct object for later merging
   if (label_first_break) {
-    # we label From
     labels <- breaks[-length(breaks)]
   } else {
-    # we label To
     labels <- breaks[-1]
   }
-  # bin the time column on common breaks
+
+  # bin the time column using clock::date_group
   data <- data %>%
-    dplyr::mutate(bin = cut({{time_col}}, breaks = breaks, labels = labels, right = FALSE))
+    dplyr::mutate(bin = clock::date_group({{time_col}}, n = n, precision = precision))
+
   # nest to perform calculation
   data_nested <- data %>%
     dplyr::group_by(across(all_of(groups)), bin) %>%
     tidyr::nest()
+
   # calculate last - first pellet count on cummulative column
   data_nested <- data_nested %>%
-    # we should be able to use n() because we checked for all pellet events at the top
-    # also, doing last-first would be off by one, so we should account for that if coming back to that strategy
     dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = n()))) %>%
     tidyr::unnest(data) %>%
     dplyr::ungroup() %>%
@@ -87,18 +107,55 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   unique_groups <- data %>%
     dplyr::select(all_of(groups)) %>%
     dplyr::distinct()
+
   # Generate possible combinations of bin and groups without duplicates
   complete_data <- tidyr::crossing(bin = as.POSIXct(labels, tz = "UTC"), unique_groups)
 
   # join the computed data with the complete data
   return(
     complete_data %>%
-    dplyr::left_join(data_nested, by = c("bin", groups)) %>%
-    tidyr::replace_na(list(pellet_rate = 0)) %>%
-    dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
+      dplyr::left_join(data_nested, by = c("bin", groups)) %>%
+      tidyr::replace_na(list(pellet_rate = 0)) %>%
+      dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
   )
 }
 
+
 check_pellets <- function(data) {
   return(any(data$Event != "Pellet"))
+}
+
+# This function comes handy to use the units from the clock package with seq()
+standardize_unit <- function(unit) {
+  switch(unit,
+         minute = "min",
+         hour = "hour",
+         day = "day",
+         week = "week",
+         month = "month",
+         year = "year",
+         stop("Invalid unit.")
+  )
+}
+
+# This is a nice helper to parse a bin written as "1 hour" into n and precision
+# the idea is to feed this
+parse_bin <- function(bin) {
+  # Split bin argument by spaces
+  bin_components <- strsplit(bin, " ")[[1]]
+  # Error handling
+  if (length(bin_components) != 2) {
+    stop("bin argument must be a string in the format of 'n unit', where n is a number and unit is a time unit (e.g., '1 hour').")
+  }
+  n <- bin_components[1]
+  if (!is.numeric(as.numeric(n)) || as.numeric(n) <= 0) {
+    stop("The first part of the `bin` argument must be a positive number.")
+  }
+  n <- as.integer(n)
+  precision <- bin_components[2]
+  valid_units <- c("second", "minute", "hour", "day", "week", "month", "year")
+  if (!(precision %in% valid_units)) {
+    stop(paste("The second part of the `bin` argument must be a valid time unit.\nChoose from:", paste(valid_units, collapse = ", "), "."))
+  }
+  return(list(n = n, precision = precision))
 }
