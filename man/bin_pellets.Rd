@@ -11,7 +11,7 @@ bin_pellets(data, time_col, bin, label_first_break = TRUE)
 
 \item{time_col}{The \code{datetime} column to use as}
 
-\item{bin}{A character string specifying the time interval for binning (e.g., "1 hour", "30 min").}
+\item{bin}{A character string specifying the time interval for binning (e.g., "1 hour", "30 minunte").}
 
 \item{label_first_break}{Logical indicating whether to label the first break as the start time (default is TRUE).}
 }
@@ -22,5 +22,5 @@ A data frame with binned pellet counts and corresponding bin timestamps.
 Bins the pellets based on the specified time interval in \code{bin} and the data range.
 }
 \seealso{
-\code{\link[=recalculate_pellets]{recalculate_pellets()}}
+\code{\link[=recalculate_pellets]{recalculate_pellets()}}, \code{\link[clock:time-point-rounding]{clock::time_point_round()}}
 }
