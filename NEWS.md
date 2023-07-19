@@ -1,7 +1,7 @@
 # fed3 0.1.1
 
 * Added `clock` dependency
-* Improved a bunch of bugs in recalculate_pellets, bin_pellets
+* Improved a bunch of bugs in `recalculate_pellets()`, `bin_pellets()`
 * Added `bin_pellets_lightcycle()`
 
 # fed3 0.1.0
