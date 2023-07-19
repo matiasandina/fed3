@@ -27,7 +27,8 @@ Imports:
     zoo,
     tidyr,
     ggplot2,
-    lifecycle
+    lifecycle,
+    clock
 Depends: 
     lubridate,
     R (>= 2.10),
