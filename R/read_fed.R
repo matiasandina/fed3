@@ -52,6 +52,10 @@ check_duplicated <- function(data, column) {
 deduplicate_datetime <- function(data, method = 'offset', offset = '0.1 sec',
                         reset_counts = FALSE,
                         reset_columns = c('Pellet_Count', 'Left_Poke_Count', 'Right_Poke_Count')) {
+  # This would only happen with test data, FED data should have datetime column
+  if(is.character(duplicate_test_data$datetime)){
+    data$datetime <- lubridate::parse_date_time(data$datetime, "ymd HMS")
+  }
 
   # Warn if there are NAs in the parsing
   if (any(is.na(data$datetime))){
