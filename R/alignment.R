@@ -56,3 +56,42 @@ set_alignment <- function(df, datetime_col, alignment){
 
   return(df)
 }
+
+
+#' @title Add Zeitgeber Time (ZT)
+#' @description
+#'
+#' This function adds a new column `zt` to the input `data.frame`, which contains
+#' the datetime values in `datetime_col` shifted so that `lights_on_hour` becomes the new midnight (00:00:00).
+#'
+#' @param df A `data.frame`
+#' @param datetime_col The name of the column containing the datetime values to be shifted
+#' @param lights_on_hour A numeric value between 1 and 23 representing the hour at which lights are turned on,
+#' and which should become the new midnight (00:00:00)
+#' @seealso [set_alignment()], [bin_pellets_lightcycle()]
+#' @return A dataframe with the new `zt` column
+#' @export
+#'
+#' @examples
+#' df <- data.frame(
+#'   datetime_col = seq(from = as.POSIXct("2023-07-20 00:00:00", tz = "UTC"),
+#'                      to = as.POSIXct("2023-07-21 00:00:00", tz = "UTC"),
+#'                      by = "hour"),
+#'   value = runif(25)
+#' )
+#'
+#' lights_on_hour = 6
+#' df <- add_zt(df, datetime_col, lights_on_hour)
+#'
+add_zt <- function(df, datetime_col, lights_on_hour){
+  if(!is.numeric(lights_on_hour) || lights_on_hour < 1 || lights_on_hour > 23){
+    stop("lights_on_hour must be a numeric value between 1 and 23")
+  }
+
+  df <- df %>%
+    dplyr::mutate(zt = lubridate::add_with_rollback(
+      {{datetime_col}},
+      -lubridate::hours(lights_on_hour)))
+
+  return(df)
+}
