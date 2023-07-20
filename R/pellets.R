@@ -119,10 +119,12 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   )
 }
 
-#' Bin Pellet Events According to Light Cycle
+#' @title Bin Pellet Events According to Light Cycle
 #'
-#' This function assigns each event to a light or dark period, then counts the number of events in each period.
+#' @description This function assigns each event to a light or dark period, then counts the number of events in each period.
 #' It requires a data frame that contains a datetime column and only pellet events.
+#'
+#' Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call ``
 #'
 #' @param data A data frame that contains a datetime column and only pellet events.
 #' @param time_col The datetime column in your data frame. You can use a bare column name.
@@ -132,7 +134,15 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 #' @return A `data.frame` grouped by the original grouping variables, date and light cycle period,
 #' with an additional column `pellets` indicating the number of events in each period.
 #'
-#' @seealso [fed3::bin_pellets()], [fed3::filter_pellets()], [fed3::recalculate_pellets()]
+#' @seealso [fed3::bin_pellets()], [fed3::add_zt()], [fed3::filter_pellets()], [fed3::recalculate_pellets()]
+#' @examples
+#'
+#' \dontrun{
+#' # will have light cycle split by date
+#' read_fed(path) %>% set_alignment(datetime) %>% add_zt(datetime, lights_on_hour = 7) %>% bin_pellets_lightcycle(datetime)
+#' # zt date will only contain full light/dark periods
+#' read_fed(path) %>% set_alignment(datetime) %>% add_zt(datetime, lights_on_hour = 7) %>% bin_pellets_lightcycle(zt)
+#' }
 #'
 #' @export
 bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_off_hour = 19) {

@@ -27,7 +27,19 @@ with an additional column \code{pellets} indicating the number of events in each
 \description{
 This function assigns each event to a light or dark period, then counts the number of events in each period.
 It requires a data frame that contains a datetime column and only pellet events.
+
+Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call ``
+}
+\examples{
+
+\dontrun{
+# will have light cycle split by date
+read_fed(path) \%>\% set_alignment(datetime) \%>\% add_zt(datetime, lights_on_hour = 7) \%>\% bin_pellets_lightcycle(datetime)
+# zt date will only contain full light/dark periods
+read_fed(path) \%>\% set_alignment(datetime) \%>\% add_zt(datetime, lights_on_hour = 7) \%>\% bin_pellets_lightcycle(zt)
+}
+
 }
 \seealso{
-\code{\link[=bin_pellets]{bin_pellets()}}, \code{\link[=filter_pellets]{filter_pellets()}}, \code{\link[=recalculate_pellets]{recalculate_pellets()}}
+\code{\link[=bin_pellets]{bin_pellets()}}, \code{\link[=add_zt]{add_zt()}}, \code{\link[=filter_pellets]{filter_pellets()}}, \code{\link[=recalculate_pellets]{recalculate_pellets()}}
 }
