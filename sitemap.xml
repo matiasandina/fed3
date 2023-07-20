@@ -31,7 +31,13 @@
     <loc>https://matiasandina.github.io/fed3/reference/bin_pellets_lightcycle.html</loc>
   </url>
   <url>
+    <loc>https://matiasandina.github.io/fed3/reference/check_duplicated.html</loc>
+  </url>
+  <url>
     <loc>https://matiasandina.github.io/fed3/reference/copy_files.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/deduplicate_datetime.html</loc>
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/fed3-package.html</loc>
