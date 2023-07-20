@@ -1,7 +1,11 @@
-#' @title "Read Fed Files"
+#' @title Read Fed Files
 #' @name read_fed
 #' @param filename file path of csv file produced by FED3
-#' @details This function will read the raw data with column specifications (see `fed_col_types()`). It will append the `datetime` by formatting the FED's clock datetime as `yyyy-mm-dd HH:MM:SS`, it will also extract `year`, `month`, and `day` from that date. It will parse the session from the `filename` and append it to the resulting `data.frame`.
+#' @param lib_version `character` with library version to be used for specifying the columns
+#' @param deduplicate_method Method to be implemented by `deduplicate_datetime()` to deal with duplicate timestamps recorded by FED machines.
+#' @details This function will read the raw data with column specifications (see `fed_col_types()`). It will append the `datetime` by formatting the FED's clock datetime as `yyyy-mm-dd HH:MM:SS`. It will parse the session from the `filename` and append it to the resulting `data.frame`.
+#' @return A `data.frame` with parsed columns added to the original FED data.
+#' @seealso [fed_col_types()], [deduplicate_datetime()], [readr::read_csv()]
 #' @export
 read_fed <- function(filename, lib_version = NULL, deduplicate_method = "offset"){
 
@@ -18,20 +22,33 @@ read_fed <- function(filename, lib_version = NULL, deduplicate_method = "offset"
   # Add year, day month columns
   # add fed number
   X <- X %>%
-    dplyr::mutate(day = lubridate::day(datetime),
-                  month = lubridate::month(datetime),
-                  year = lubridate::year(datetime),
-                  FED = paste0("FED", stringr::str_pad(Device_Number, width=3, pad=0)))
+    dplyr::mutate(FED = paste0("FED", stringr::str_pad(Device_Number, width=3, pad=0)))
   return(X)
 }
 
-
-# Function to check for duplicated entries
+#' @title Check Duplicated
+#' @description
+#' Helper function to check for duplicated entries.
 check_duplicated <- function(data, column) {
   return(anyDuplicated(data[[column]]))
 }
 
-
+#' @title Check Duplicated
+#' @param data FED data frame as read by `read_fed()`
+#' @param method The method to deduplicate the identical timestamps (default is 'offset'). `method` must be one of 'keep_first', 'keep_last', 'remove', or 'offset', or 'interpolate'.
+#' @param offset The offset to be added to duplicate datetimes (e.g., '0.1 sec').
+#' @param reset_counts whether to reset the `reset_columns` or not (default = FALSE).
+#' @param reset_columns The columns to be reset if `reset_counts = TRUE`.
+#' @description
+#' The precision of the FED clock is in seconds.
+#' It might happen that two events have the same exact timestamp.
+#' This helper function is used to check for duplicated entries and deduplicate them using methods.
+#' This function is internally called by `read_fed()` and the user is advised to first try several examples before modifying `deduplicate_method` in `read_fed()`
+#' @examples
+#' # data contains datetimes that will fail to parse and are duplicated
+#' fed3::duplicate_test_data
+#' fed3:::deduplicate_datetime(duplicate_test_data, method = 'keep_first')
+#' fed3:::deduplicate_datetime(duplicate_test_data, method = 'offset', offset = "1 sec")
 deduplicate_datetime <- function(data, method = 'offset', offset = '0.1 sec',
                         reset_counts = FALSE,
                         reset_columns = c('Pellet_Count', 'Left_Poke_Count', 'Right_Poke_Count')) {

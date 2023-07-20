@@ -2,16 +2,26 @@
 % Please edit documentation in R/read_fed.R
 \name{read_fed}
 \alias{read_fed}
-\title{"Read Fed Files"}
+\title{Read Fed Files}
 \usage{
 read_fed(filename, lib_version = NULL, deduplicate_method = "offset")
 }
 \arguments{
 \item{filename}{file path of csv file produced by FED3}
+
+\item{lib_version}{\code{character} with library version to be used for specifying the columns}
+
+\item{deduplicate_method}{Method to be implemented by \code{deduplicate_datetime()} to deal with duplicate timestamps recorded by FED machines.}
+}
+\value{
+A \code{data.frame} with parsed columns added to the original FED data.
 }
 \description{
-"Read Fed Files"
+Read Fed Files
 }
 \details{
-This function will read the raw data with column specifications (see \code{fed_col_types()}). It will append the \code{datetime} by formatting the FED's clock datetime as \verb{yyyy-mm-dd HH:MM:SS}, it will also extract \code{year}, \code{month}, and \code{day} from that date. It will parse the session from the \code{filename} and append it to the resulting \code{data.frame}.
+This function will read the raw data with column specifications (see \code{fed_col_types()}). It will append the \code{datetime} by formatting the FED's clock datetime as \verb{yyyy-mm-dd HH:MM:SS}. It will parse the session from the \code{filename} and append it to the resulting \code{data.frame}.
+}
+\seealso{
+\code{\link[=fed_col_types]{fed_col_types()}}, \code{\link[=deduplicate_datetime]{deduplicate_datetime()}}, \code{\link[readr:read_delim]{readr::read_csv()}}
 }
