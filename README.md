@@ -28,3 +28,8 @@ library(fed3)
 ## Docs
 
 📖 Package documentation site [here](https://matiasandina.github.io/fed3/)
+
+## Acknowledgements
+
+This package draws a lot of inspiration from the [python pacakge](https://github.com/earnestt1234/fed3)
+The logo reuses the fed cartoon from <a href="https://doi.org/10.5281/zenodo.5228170"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.5228170.svg" alt="DOI"></a>
