@@ -28,7 +28,7 @@ with an additional column \code{pellets} indicating the number of events in each
 This function assigns each event to a light or dark period, then counts the number of events in each period.
 It requires a data frame that contains a datetime column and only pellet events.
 
-Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call ``
+Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call \code{add_zt()} first and bin by \code{zt} instead of \code{datetime}.
 }
 \examples{
 

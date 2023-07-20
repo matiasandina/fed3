@@ -1,4 +1,4 @@
-# fed3
+# fed3 <a href="https://matiasandina.github.io/fed3/"><img src="man/figures/logo.png" align="right" height="138" alt="fed3 website" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)

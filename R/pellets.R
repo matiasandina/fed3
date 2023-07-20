@@ -124,7 +124,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 #' @description This function assigns each event to a light or dark period, then counts the number of events in each period.
 #' It requires a data frame that contains a datetime column and only pellet events.
 #'
-#' Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call ``
+#' Because dates and light cycles are not aligned (dark phase often spans more than one date), it is recommended that users call `add_zt()` first and bin by `zt` instead of `datetime`.
 #'
 #' @param data A data frame that contains a datetime column and only pellet events.
 #' @param time_col The datetime column in your data frame. You can use a bare column name.

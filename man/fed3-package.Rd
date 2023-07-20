@@ -6,6 +6,8 @@
 \alias{fed3-package}
 \title{fed3: An R package to read and analyze data from FED3 devices}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 An R package to read and analyze data from FED3 devices
 }
 \seealso{
