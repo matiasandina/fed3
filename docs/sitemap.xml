@@ -19,7 +19,16 @@
     <loc>https://matiasandina.github.io/fed3/news/index.html</loc>
   </url>
   <url>
+    <loc>https://matiasandina.github.io/fed3/reference/StatLights.html</loc>
+  </url>
+  <url>
     <loc>https://matiasandina.github.io/fed3/reference/backup_sd.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/bin_pellets.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/bin_pellets_lightcycle.html</loc>
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/copy_files.html</loc>
@@ -29,6 +38,9 @@
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/fed_col_types.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/filter_pellets.html</loc>
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/find_files.html</loc>
@@ -50,5 +62,11 @@
   </url>
   <url>
     <loc>https://matiasandina.github.io/fed3/reference/recalculate_pellets.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/set_alignment.html</loc>
+  </url>
+  <url>
+    <loc>https://matiasandina.github.io/fed3/reference/use_pi_time.html</loc>
   </url>
 </urlset>

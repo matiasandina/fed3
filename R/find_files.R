@@ -21,7 +21,7 @@ find_files <- function(target_dates = NULL,
     # convert to date format, we assume the config files are written properly
     target_dates <- as.POSIXct(target_dates)
   } else {
-    are_dates <- sapply(target_dates, is.Date)
+    are_dates <- sapply(target_dates, is_date)
     parsed_dates_fail <- any(are_dates == FALSE)
     if (parsed_dates_fail) {
       usethis::ui_stop(
@@ -69,8 +69,11 @@ find_files <- function(target_dates = NULL,
 
 }
 
-#' Nice function to check if things are dates
-#' We don't want to coerce it, it can lead to a lot of errors
-is.Date <- function(x) {
+#' @title Is Date
+#' @description
+#' Helper function to check if things are of class `Date` or `POSIXt`.
+#' Equivalent to `function(x) {lubridate::is.Date(x) | lubridate::is.POSIXt(x)}`
+#' @return `boolean`
+is_date <- function(x) {
   inherits(x, c("Date", "POSIXt"))
 }

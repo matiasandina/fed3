@@ -2,7 +2,7 @@
 % Please edit documentation in R/fed_col_types.R
 \name{fed_col_types}
 \alias{fed_col_types}
-\title{"Fed Column Types"}
+\title{Fed Column Types}
 \usage{
 fed_col_types(lib_version = NULL)
 }
@@ -10,5 +10,5 @@ fed_col_types(lib_version = NULL)
 \item{version}{character version of FED_library used to collect data}
 }
 \description{
-"Fed Column Types"
+This function provides the column classes that will be used to read data from FEDs. Because the different library version might have different column types, this function returns the types according to the \code{lib_version}.
 }

@@ -1,4 +1,7 @@
-#' @title "Fed Column Types"
+#' @title Fed Column Types
+#' @description
+#' This function provides the column classes that will be used to read data from FEDs. Because the different library version might have different column types, this function returns the types according to the `lib_version`.
+#'
 #' @name fed_col_types
 #' @param version character version of FED_library used to collect data
 fed_col_types <- function(lib_version=NULL){
