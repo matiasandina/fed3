@@ -99,8 +99,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   data_nested <- data_nested %>%
     dplyr::mutate(data = purrr::map(data, ~dplyr::summarise(.x, pellet_rate = n()))) %>%
     tidyr::unnest(data) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(bin = as.POSIXct(as.character(bin), tz = "UTC"))
+    dplyr::ungroup()
 
   # create a data frame that includes all possible combinations of bins and groups
   unique_groups <- data %>%
@@ -113,7 +112,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # join the computed data with the complete data
   return(
     complete_data %>%
-      dplyr::left_join(data_nested, by = c("bin", groups)) %>%
+      dplyr::left_join(data_nested, by = c(groups, "bin")) %>%
       tidyr::replace_na(list(pellet_rate = 0)) %>%
       dplyr::arrange(dplyr::across(dplyr::all_of(groups)), bin)
   )
