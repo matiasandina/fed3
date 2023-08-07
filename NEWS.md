@@ -1,3 +1,5 @@
+# fed3 0.1.2
+
 # fed3 0.1.1
 
 * Added `clock` dependency to better handle times in different time locales
