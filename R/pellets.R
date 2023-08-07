@@ -178,6 +178,8 @@ bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_of
                                          else {"dark"}
                                        }
                                      }))
+    # light_cycle should be a factor with levels c("light", "dark")
+    data <- dplyr::mutate(data, light_cycle = factor(light_cycle, levels = c("light", "dark")))
 
     # Count the events
     data <- data %>%
