@@ -127,6 +127,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 #'
 #' @param data A data frame that contains a datetime column and only pellet events.
 #' @param time_col The datetime column in your data frame. You can use a bare column name.
+#' It is recommended to use the "zt" column created by `add_zt()` to ensure that the light and dark periods align correctly.
 #' @param lights_on_hour The hour (0-23) when the light period starts. Default is 7.
 #' @param lights_off_hour The hour (0-23) when the light period ends. Default is 19.
 #'
@@ -138,9 +139,10 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 #'
 #' \dontrun{
 #' # will have light cycle split by date
-#' read_fed(path) %>% set_alignment(datetime) %>% add_zt(datetime, lights_on_hour = 7) %>% bin_pellets_lightcycle(datetime)
+#' read_fed(path) %>% recalculate_pellets() %>% add_zt(datetime) %>% bin_pellets_lightcycle(datetime)
+#' read_fed(path) %>% recalculate_pellets() %>% add_zt(datetime) %>% bin_pellets_lightcycle(datetime)
 #' # zt date will only contain full light/dark periods
-#' read_fed(path) %>% set_alignment(datetime) %>% add_zt(datetime, lights_on_hour = 7) %>% bin_pellets_lightcycle(zt)
+#' read_fed(path) %>% recalculate_pellets() %>% add_zt(datetime) %>% bin_pellets_lightcycle(zt)
 #' }
 #'
 #' @export
@@ -149,6 +151,15 @@ bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_of
     if (fed3:::check_pellets(data)) {
       stop("Data contains Events other than Pellets.\nUse filter_pellets() or recalculate_pellets() as needed.")
     }
+    # intercept wrong use of zt
+    time_col_name <- rlang::as_name(rlang::enquo(time_col))
+
+    if (time_col_name == "zt") {
+      usethis::ui_warn("Using `zt`, adjusting `lights_on_hours`=0 and `lights_off_hour`=12")
+      lights_on_hour <- 0
+      lights_off_hour <- 12
+    }
+
     # Get grouping variables
     groups <- dplyr::group_vars(data)
 
@@ -174,6 +185,11 @@ bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_of
                       date = lubridate::date({{time_col}}),
                       light_cycle) %>%
       dplyr::count(name = "pellets")
+
+    # rename if needed
+    if (time_col_name == "zt") {
+      data <- dplyr::rename(data, zt = date)
+    }
 
     return(data)
 }

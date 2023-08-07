@@ -34,9 +34,10 @@ Because dates and light cycles are not aligned (dark phase often spans more than
 
 \dontrun{
 # will have light cycle split by date
-read_fed(path) \%>\% set_alignment(datetime) \%>\% add_zt(datetime, lights_on_hour = 7) \%>\% bin_pellets_lightcycle(datetime)
+read_fed(path) \%>\% recalculate_pellets() \%>\% add_zt(datetime) \%>\% bin_pellets_lightcycle(datetime)
+read_fed(path) \%>\% recalculate_pellets() \%>\% add_zt(datetime) \%>\% bin_pellets_lightcycle(datetime)
 # zt date will only contain full light/dark periods
-read_fed(path) \%>\% set_alignment(datetime) \%>\% add_zt(datetime, lights_on_hour = 7) \%>\% bin_pellets_lightcycle(zt)
+read_fed(path) \%>\% recalculate_pellets() \%>\% add_zt(datetime) \%>\% bin_pellets_lightcycle(zt)
 }
 
 }
