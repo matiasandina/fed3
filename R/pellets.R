@@ -188,7 +188,7 @@ bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_of
 
     # rename if needed
     if (time_col_name == "zt") {
-      data <- dplyr::rename(data, zt = date)
+      data <- dplyr::rename(data, zt_date = date)
     }
 
     return(data)

@@ -14,7 +14,8 @@ bin_pellets_lightcycle(
 \arguments{
 \item{data}{A data frame that contains a datetime column and only pellet events.}
 
-\item{time_col}{The datetime column in your data frame. You can use a bare column name.}
+\item{time_col}{The datetime column in your data frame. You can use a bare column name.
+It is recommended to use the "zt" column created by \code{add_zt()} to ensure that the light and dark periods align correctly.}
 
 \item{lights_on_hour}{The hour (0-23) when the light period starts. Default is 7.}
 
