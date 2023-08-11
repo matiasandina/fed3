@@ -116,37 +116,54 @@ StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
                                compute_panel = function(self, data, scales, lights_on_hour = 7, lights_off_hour = 19) {
                                  experiment_range <- range(as.POSIXct(data$x, origin = "1970-01-01", tz = "UTC"))
 
-                                 dates <- seq(lubridate::date(experiment_range[1]),
-                                              lubridate::date(experiment_range[2]), "1 day")
+                                 # Expand the date range to include one day before and after
+                                 extended_dates <- seq(lubridate::date(experiment_range[1]) - lubridate::days(1),
+                                                       lubridate::date(experiment_range[2]) + lubridate::days(1), "1 day")
 
-                                 light_changes <- c(glue::glue("{dates} {lights_off_hour}:00:00"),
-                                                    glue::glue("{dates} {lights_on_hour}:00:00"))
+                                 # Generate the complete sequence of light changes
+                                 light_on_times <- as.POSIXct(glue::glue("{extended_dates} {lights_on_hour}:00:00"), tz = "UTC")
+                                 light_off_times <- as.POSIXct(glue::glue("{extended_dates} {lights_off_hour}:00:00"), tz = "UTC")
 
-                                 light_changes <- sort(as.POSIXct(light_changes, tz = "UTC"))
-
-                                 light_changes <- light_changes[dplyr::between(light_changes,
-                                                                               experiment_range[1], experiment_range[2])]
-
-                                 if (length(light_changes) %% 2 == 1) {
-                                   if (lubridate::hour(light_changes[1]) == min(lights_on_hour, lights_off_hour)) {
-                                     light_changes <- append(light_changes, max(light_changes) + lubridate::hours(24 - abs(lights_off_hour - lights_on_hour)))
-                                   } else {
-                                     light_changes <- c(min(light_changes) - lubridate::hours(abs(lights_off_hour - lights_on_hour)), light_changes)
-                                   }
+                                 # If the off hour is before the on hour, shift the off times to the next day
+                                 if (lights_off_hour < lights_on_hour) {
+                                   light_off_times <- light_off_times + lubridate::days(1)
                                  }
 
-                                 shading_starts <- light_changes[lubridate::hour(light_changes) == lights_off_hour]
-                                 shading_ends <- light_changes[lubridate::hour(light_changes) == lights_on_hour]
+                                 # Combine and sort the light changes
+                                 light_changes <- sort(c(light_on_times, light_off_times))
 
+                                 # Filter to match the actual experiment range, including the nearest on/off times
+                                 light_changes <- light_changes[dplyr::between(light_changes,
+                                                                               experiment_range[1] - lubridate::days(1),
+                                                                               experiment_range[2] + lubridate::days(1))]
+
+                                 # Make sure the sequence starts with an off time and ends with an on time
+                                 if (lubridate::hour(light_changes[1]) == lights_on_hour) {
+                                   light_changes <- light_changes[-1]
+                                 }
+                                 if (lubridate::hour(tail(light_changes, 1)) == lights_off_hour) {
+                                   light_changes <- light_changes[-length(light_changes)]
+                                 }
+
+                                 # Extract the shading starts and ends
+                                 shading_starts <- light_changes[seq(1, length(light_changes), by = 2)]
+                                 shading_ends <- light_changes[seq(2, length(light_changes), by = 2)]
+
+                                 # Create the data frame
                                  df <- data.frame(
-                                   xmin = as.numeric(shading_starts),
-                                   xmax = as.numeric(shading_ends),
+                                   xmin = shading_starts,
+                                   xmax = shading_ends,
                                    ymin = -Inf,
                                    ymax = Inf
                                  )
 
-                                 df <- df[order(df$xmin), ]
-
+                                 # Filter to include shading that starts within the actual experiment range
+                                 # or ends within the range
+                                 df <- df %>%
+                                   dplyr::filter((dplyr::between(xmin, experiment_range[1], experiment_range[2])) |
+                                                   (dplyr::between(xmax, experiment_range[1], experiment_range[2])))
+                                 # TODO: unclear if the user wants this to extend until the next light change
+                                 # or to finish at the data (experiment_range[2])
                                  return(df)
                                },
                                required_aes = c("x")
