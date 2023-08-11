@@ -1,5 +1,8 @@
 # fed3 0.1.3
 
+* Improved usage of `bin_pellets_lightcycle()` and made a factor of the `light_cycle` column #12
+* Improved logic in `make_lights.R`, the backend of `geom_lights()`. Commit a700cbb1 seems to fix #5 too.
+
 # fed3 0.1.2
 
 # fed3 0.1.1
