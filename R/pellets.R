@@ -12,38 +12,62 @@ filter_pellets <- function(df){
 #' @return A data frame identical to `df` but with recalculated pellet counts and arranged by `datetime`.
 #' @export
 recalculate_pellets <- function(df, group_var = NULL) {
-  if (dplyr::is_grouped_df(df)) {
+  filtered_df <- df %>%
+    filter_pellets()
+
+  if (nrow(filtered_df) == 0) {
+    usethis::ui_warn("No pellet events found in the input data frame.")
+    return(filtered_df)
+  }
+
+  if (dplyr::is_grouped_df(filtered_df)) {
     if (!rlang::is_null(rlang::enexpr(group_var))) {
       warning("Ignoring 'group_var' argument as the input dataframe is already grouped.")
     }
-    groups <- dplyr::group_vars(df)
-    output <- df %>%
-        filter_pellets() %>%
-        dplyr::arrange(dplyr::across(dplyr::all_of(groups)), datetime) %>%
-        dplyr::mutate(pellets = 1:length(Pellet_Count))
+    groups <- dplyr::group_vars(filtered_df)
+
+    # Check for empty groups within the filtered data frame
+    empty_groups <- filtered_df %>%
+      dplyr::group_by(dplyr::across(groups)) %>%
+      dplyr::filter(n() == 0) %>%
+      dplyr::group_vars()
+
+    if (length(empty_groups) > 0) {
+      usethis::ui_warn("The following groups have no pellet events:", paste(empty_groups, collapse = ", "))
+    }
+
+    output <- filtered_df %>%
+      dplyr::arrange(dplyr::across(groups), datetime) %>%
+      dplyr::mutate(pellets = 1:n())
   } else {
     # Case: Not grouped but group_var provided
     if (!rlang::is_null(rlang::enexpr(group_var))) {
       group_var_enquo <- rlang::enquo(group_var)
       group_var_name <- rlang::quo_name(group_var_enquo)
-      if (group_var_name %in% names(df)) {
-        output <- df %>%
-          filter_pellets() %>%
+      if (group_var_name %in% names(filtered_df)) {
+        output <- filtered_df %>%
           dplyr::arrange(!!group_var_enquo, datetime) %>%
           dplyr::group_by(!!group_var_enquo) %>%
-          dplyr::mutate(pellets = 1:length(Pellet_Count)) %>%
-          dplyr::ungroup()
+          dplyr::mutate(pellets = 1:n())
+
+        # Check for empty groups within the filtered data frame
+        empty_groups <- output %>%
+          dplyr::group_by(!!group_var_enquo) %>%
+          dplyr::filter(n() == 0) %>%
+          dplyr::pull(!!group_var_enquo)
+
+        if (length(empty_groups) > 0) {
+          usethis::ui_warn("The following groups have no pellet events:", paste(empty_groups, collapse = ", "))
+        }
       }
     } else {
       # Case: Not grouped, no group_var provided
-      output <- df %>%
-        filter_pellets() %>%
+      output <- filtered_df %>%
         dplyr::arrange(datetime) %>%
-        dplyr::mutate(pellets = 1:length(Pellet_Count))
+        dplyr::mutate(pellets = 1:n())
     }
   }
   return(output)
-
 }
 
 #' @title Bin Pellets
