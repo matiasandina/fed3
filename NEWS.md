@@ -1,3 +1,5 @@
+# fed3 0.1.4
+
 # fed3 0.1.3
 
 * Improved usage of `bin_pellets_lightcycle()` and made a factor of the `light_cycle` column #12
