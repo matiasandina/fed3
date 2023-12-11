@@ -54,14 +54,15 @@ set_alignment <- function(df, datetime_col, alignment){
       dplyr::select(-elapsed)
   } else if (alignment == "time"){
     df <- df %>%
-      dplyr::mutate(date_diff = difftime(as.Date({{datetime_col}}),
+      # Calculate the shift from the min date in each group to the global min_date
+      dplyr::mutate(min_date_shift = difftime(min(as.Date({{datetime_col}})),
                                          min_date, units = "days")) %>%
       dplyr::mutate(dplyr::across(
       .cols = dplyr::where(lubridate::is.POSIXct),
-      .fns = ~ {{datetime_col}} - date_diff,
+      .fns = ~ {{datetime_col}} - min_date_shift,
       .names = "aligned_{.col}"
     ))  %>%
-      dplyr::select(-date_diff)
+      dplyr::select(-min_date_shift)
   }  else if(alignment == 'elapsed'){
     df <- dplyr::mutate(df, dplyr::across(
       .cols = dplyr::where(lubridate::is.POSIXct),
