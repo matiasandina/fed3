@@ -21,8 +21,18 @@ devtools::install_github("matiasandina/fed3")
 
 
 ``` r
+library(tidyverse)
 library(fed3)
-## basic example code
+## Basic example code
+## Reading multiple animals
+fed_files <- list.files(folder, pattern = "^FED", full.names = T)
+# assuming a vector of animal_ids that matches fed_files
+fed_files <- set_names(fed_files, animal_ids)
+fed_df <- map(fed_files, read_fed) %>% bind_rows(.id = "animal_id")
+# Maybe the same animal was given more than one fed, so you need to recalculate pellets
+fed_df <- fed_df %>% group_by(animal_id) %>% recalculate_pellets()
+# Plotting Pellets vs datetime
+ggplot(fed_df, aes(datetime, pellets, color = animal_id)) + geom_line()
 ```
 
 ## Docs
