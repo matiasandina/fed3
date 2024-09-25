@@ -113,16 +113,19 @@ make_lights <- function(params, df) {
 #'
 #' }
 StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
-                               compute_panel = function(self, data, scales, lights_on_hour = 7, lights_off_hour = 19) {
-                                 experiment_range <- range(as.POSIXct(data$x, origin = "1970-01-01", tz = "UTC"))
+                               compute_panel = function(self, data, scales, lights_on_hour = 7, lights_off_hour = 19, time_zone = Sys.timezone()) {
+                                 # Create a copy of data$x converted to POSIXct
+                                 datetime_x <- as.POSIXct(data$x, origin = "1970-01-01", tz = time_zone)
+
+                                 experiment_range <- range(datetime_x)
 
                                  # Expand the date range to include one day before and after
                                  extended_dates <- seq(lubridate::date(experiment_range[1]) - lubridate::days(1),
                                                        lubridate::date(experiment_range[2]) + lubridate::days(1), "1 day")
 
                                  # Generate the complete sequence of light changes
-                                 light_on_times <- as.POSIXct(glue::glue("{extended_dates} {lights_on_hour}:00:00"), tz = "UTC")
-                                 light_off_times <- as.POSIXct(glue::glue("{extended_dates} {lights_off_hour}:00:00"), tz = "UTC")
+                                 light_on_times <- as.POSIXct(glue::glue("{extended_dates} {lights_on_hour}:00:00"), tz = time_zone)
+                                 light_off_times <- as.POSIXct(glue::glue("{extended_dates} {lights_off_hour}:00:00"), tz = time_zone)
 
                                  # If the off hour is before the on hour, shift the off times to the next day
                                  if (lights_off_hour < lights_on_hour) {
@@ -138,10 +141,10 @@ StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
                                                                                experiment_range[2] + lubridate::days(1))]
 
                                  # Make sure the sequence starts with an off time and ends with an on time
-                                 if (lubridate::hour(light_changes[1]) == lights_on_hour) {
+                                 if (!length(light_changes) || (lubridate::hour(light_changes[1]) == lights_on_hour && lights_on_hour != lights_off_hour)) {
                                    light_changes <- light_changes[-1]
                                  }
-                                 if (lubridate::hour(tail(light_changes, 1)) == lights_off_hour) {
+                                 if (!length(light_changes) || (lubridate::hour(tail(light_changes, 1)) == lights_off_hour && lights_on_hour != lights_off_hour)) {
                                    light_changes <- light_changes[-length(light_changes)]
                                  }
 
@@ -162,15 +165,14 @@ StatLights <- ggplot2::ggproto("StatLights", ggplot2::Stat,
                                  df <- df %>%
                                    dplyr::filter((dplyr::between(xmin, experiment_range[1], experiment_range[2])) |
                                                    (dplyr::between(xmax, experiment_range[1], experiment_range[2])))
-                                 # TODO: unclear if the user wants this to extend until the next light change
-                                 # or to finish at the data (experiment_range[2])
+
                                  return(df)
                                },
                                required_aes = c("x")
 )
 
 #' @export
-geom_lights <- function(mapping = NULL, data = NULL, position = "identity", ..., fill = "gray60", alpha = 0.5, lights_on_hour = 7, lights_off_hour = 19) {
+geom_lights <- function(mapping = NULL, data = NULL, position = "identity", ..., fill = "gray60", alpha = 0.5, lights_on_hour = 7, lights_off_hour = 19, time_zone = Sys.timezone()) {
   ggplot2::layer(
     stat = StatLights,
     data = data,
@@ -184,6 +186,7 @@ geom_lights <- function(mapping = NULL, data = NULL, position = "identity", ...,
       alpha = alpha,
       lights_on_hour = lights_on_hour,
       lights_off_hour = lights_off_hour,
+      time_zone = time_zone,
       ...
     )
   )
