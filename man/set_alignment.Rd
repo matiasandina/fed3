@@ -25,6 +25,8 @@ It is recommended to use \code{df \%>\% group_by() \%>\% set_alignment(...)} whe
 }
 \examples{
 \dontrun{
-df \%>\% dplyr::group_by(group_col) \%>\% set_alignment(datetime_col = your_datetime_column, alignment = "time")
+df \%>\%
+  dplyr::group_by(group_col) \%>\%
+  set_alignment(datetime_col = your_datetime_column, alignment = "time")
 }
 }

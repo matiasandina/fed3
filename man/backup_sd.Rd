@@ -16,7 +16,7 @@ This function finds FED3 files on a selected folder (SD card) and stores them on
 \code{fed3::find_files()}, \code{fed3::copy_files()}
 
 This needs interactive session for user to choose folders
-We assume interactive session likely thorugh Rstudio
+We assume interactive session likely through Rstudio
 The core of this function is a moving files function
 It uses the pattern "FED"
 It uses the date as MMDDYY to create folders on the backup location

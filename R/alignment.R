@@ -14,7 +14,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' df %>% dplyr::group_by(group_col) %>% set_alignment(datetime_col = your_datetime_column, alignment = "time")
+#' df %>%
+#'   dplyr::group_by(group_col) %>%
+#'   set_alignment(datetime_col = your_datetime_column, alignment = "time")
 #' }
 #' @export
 #'

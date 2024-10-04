@@ -84,7 +84,7 @@ recalculate_pellets <- function(df, group_var = NULL) {
 #' @export
 bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # check if we have 100% pellet events
-  if (fed3:::check_pellets(data)) {
+  if (check_pellets(data)) {
     stop("Data contains Events other than Pellets.")
   }
 
@@ -92,7 +92,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   time_column <- dplyr::pull(data, {{time_col}})
 
   # split bin into n and precision
-  bin_components <- fed3:::parse_bin(bin)
+  bin_components <- parse_bin(bin)
   n <- bin_components$n
   precision <- bin_components$precision
 
@@ -102,7 +102,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
   # generate the breaks using clock package
   breaks <- seq(from = clock::date_floor(min(time_column), n = n, precision = precision),
                 to = clock::date_ceiling(max(time_column), n = n, precision = precision),
-                by = paste(n, fed3:::standardize_unit(precision)))
+                by = paste(n, standardize_unit(precision)))
 
   # We still want to keep the labels as a POSIXct object for later merging
   if (label_first_break) {
@@ -172,7 +172,7 @@ bin_pellets <- function(data, time_col, bin, label_first_break = TRUE) {
 #' @export
 bin_pellets_lightcycle <- function(data, time_col, lights_on_hour = 7, lights_off_hour = 19) {
     # Check if we have 100% pellet events
-    if (fed3:::check_pellets(data)) {
+    if (check_pellets(data)) {
       stop("Data contains Events other than Pellets.\nUse filter_pellets() or recalculate_pellets() as needed.")
     }
     # intercept wrong use of zt
