@@ -83,8 +83,8 @@ tidy_fed3_files <- function(inputdir = NULL, remove_small_files = TRUE) {
   }
 
   if (is.null(inputdir)) {
-    inputdir <- rstudioapi::selectDirectory("Select a directory containing FED3 files", path = "/")
-    if (is.null(inputdir)) return(invisible(NULL)) # User cancelled selection
+    inputdir <- choices::choose_directory(initial_dir = "/", title = "Choose directory with FED files")
+    if (is.null(inputdir) | is.na(inputdir)) return(invisible(NULL)) # User cancelled selection
   }
 
   files <- find_fed3_files(inputdir)
