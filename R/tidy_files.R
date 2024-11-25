@@ -78,9 +78,6 @@ move_and_clean_files <- function(files, inputdir, remove_small_files = TRUE) {
 #' tidy_fed3_files()
 #' }
 tidy_fed3_files <- function(inputdir = NULL, remove_small_files = TRUE) {
-  if (!rstudioapi::isAvailable()) {
-    stop("RStudio API is not available, this function must be run within RStudio")
-  }
 
   if (is.null(inputdir)) {
     inputdir <- choices::choose_directory(initial_dir = "/", title = "Choose directory with FED files")
