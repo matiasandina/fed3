@@ -39,7 +39,7 @@ Depends:
     R (>= 2.10),
     stringr,
     tibble
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Remotes: 
     matiasandina/choices
 Roxygen: list(markdown = TRUE)

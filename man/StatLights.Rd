@@ -18,6 +18,10 @@ StatLights
 \item{fill}{A string representing the color of the shading.}
 
 \item{alpha}{A numeric representing the transparency of the shading, between 0 (transparent) and 1 (opaque).}
+
+\item{clip_to_data}{Logical. If TRUE (default), shading is clipped to the range of the data.
+If FALSE, shading extends beyond the data using -Inf/Inf. This can create full-panel shading,
+but may cause unexpected visuals if combined with custom \code{scale_x_datetime()} limits.}
 }
 \value{
 A ggplot2 layer to be added to a ggplot object.
@@ -26,6 +30,9 @@ A ggplot2 layer to be added to a ggplot object.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 A custom ggplot2 extension to shade areas in a plot according to provided light hours.
 It shades from lights off to lights on. Usage through \code{\link[=geom_lights]{geom_lights()}} or \code{\link[=stat_ligths]{stat_ligths()}}
+By default, shading is clipped to the actual range of the data to avoid misleading over-extension.
+Setting \code{clip_to_data = FALSE} causes shading to fill the panel (via -Inf/Inf), which can be useful
+but may behave unexpectedly if you manually set axis limits.
 }
 \examples{
 \dontrun{
